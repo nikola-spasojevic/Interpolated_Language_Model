@@ -1,7 +1,5 @@
-from nltk.lm import MLE, Laplace, KneserNeyInterpolated
+from nltk.lm import Laplace, KneserNeyInterpolated, WittenBellInterpolated
 from nltk.lm.preprocessing import padded_everygram_pipeline
-from nltk.probability import FreqDist, KneserNeyProbDist
-from nltk import trigrams
 from collections import defaultdict
 from tokenizer.tokenizer import Tokenizer
 from vtree.v_tree import VTree
@@ -19,7 +17,7 @@ class NgramLanguageModel:
 		training_ngrams, flat_sents = padded_everygram_pipeline(N_GRAM, tokenized_train_corpus)
 		
 		# Interpolated version of Kneser-Ney smoothing.
-		lm = KneserNeyInterpolated(N_GRAM)
+		lm = WittenBellInterpolated(N_GRAM)
 		lm.fit(training_ngrams, flat_sents)
 
 		with open('../bin/vocabulary.pkl', 'wb') as output:
@@ -35,23 +33,22 @@ class NgramLanguageModel:
 		# The Third Level will hold the trigram likelihoods that branch from their 2 context words
 		# If no word is found, the search will revert back to the upper (bigram) level
 		# If no word is found, the search will revert back to the even upper (unigram) level
-			v_tree = VTree()
+			v_tree = VTree(lm.score('<UNK>'))
 			for sent in tokenized_train_corpus:
 				prev = '<s>'
 				prev_prev = '<s>'
 				for word in sent:
-					v_tree.insert(target_word=word, lklhd=lm.score(word)) # 1st lvl - unigram score
-					v_tree.insert(target_word=word, lklhd=lm.score(word, (prev,)), context=(prev,)) # 2nd lvl - bigram score
-					v_tree.insert(target_word=word, lklhd=lm.score(word, (prev_prev, prev)), context=(prev_prev, prev)) # 3rd level - trigram score
+					v_tree.insert(target_word=word, lklhd=lm.logscore(word)) # 1st lvl - unigram score
+					v_tree.insert(target_word=word, lklhd=lm.logscore(word, (prev,)), context=(prev,)) # 2nd lvl - bigram score
+					v_tree.insert(target_word=word, lklhd=lm.logscore(word, (prev_prev, prev)), context=(prev_prev, prev)) # 3rd level - trigram score
 					prev_prev = prev
 					prev = word
+				with open('../bin/v_tree.pkl', 'wb') as output:
+					pickle.dump(v_tree, output)
+					output.close()
 			return v_tree
 
 		v_tree = build_v_tree()
-
-		with open('../bin/v_tree.pkl', 'wb') as output:
-			pickle.dump(v_tree, output)
-			output.close()
 
 		def evaluate():
 		# Evaluate the total entropy of the model with respect to the corpus.
@@ -63,19 +60,17 @@ class NgramLanguageModel:
 			for ngram in text_ngrams:
 				word = ngram[-1]
 				context = ngram[:-1]
-				score = lm.logscore('UNK')
+				score = 0.0002016942315449778
 				if not context:
-					 # need to define delta score factor for unseen context (currently given unigram score + UNK score)
-					score += lm.logscore(word)
+					if lm.counts[word]:
+						score = lm.logscore(word)
 				elif lm.counts[context][word]:
 					score = lm.logscore(word, context)
 				entropy += score
 			entropy *= -1/len(text_ngrams)
 			file = open('../bin/model_evaluation.txt', 'w')
-			file.write('Model Evaluation Score (Entropy): {}\n\
-				Model Evaluation Score (Perplexity): {}'.format(entropy, pow(2.0, entropy)))
+			file.write('Model Evaluation Score (Entropy): {}\nModel Evaluation Score (Perplexity): {}'.format(entropy, pow(2.0, entropy)))
 			file.close()
-
 		evaluate()
 
 def main():
@@ -84,5 +79,3 @@ def main():
 
 if __name__ == "__main__":
    main()
-
-
