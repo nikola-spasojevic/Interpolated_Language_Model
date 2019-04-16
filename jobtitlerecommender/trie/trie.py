@@ -49,9 +49,7 @@ class Trie:
 def main():
     with open('../bin/vocabulary.pkl', 'rb') as pickle_in:
             vocabulary = pickle.load(pickle_in, encoding='utf8')
-
     trie = Trie(vocabulary)
-
     with open('../bin/trie.pkl', 'wb') as output:
         pickle.dump(trie, output)
         output.close()
