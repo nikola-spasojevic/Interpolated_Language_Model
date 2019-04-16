@@ -19,6 +19,7 @@ class NgramLanguageModel:
 		# Interpolated version of Kneser-Ney smoothing.
 		lm = WittenBellInterpolated(N_GRAM)
 		lm.fit(training_ngrams, flat_sents)
+		UNK_SCORE = 0.0002016942315449778
 
 		with open('../bin/vocabulary.pkl', 'wb') as output:
 			pickle.dump(lm.vocab, output)
@@ -33,13 +34,17 @@ class NgramLanguageModel:
 		# The Third Level will hold the trigram likelihoods that branch from their 2 context words
 		# If no word is found, the search will revert back to the upper (bigram) level
 		# If no word is found, the search will revert back to the even upper (unigram) level
-			v_tree = VTree(lm.score('<UNK>'))
+			v_tree = VTree(UNK_SCORE)
 			for sent in tokenized_train_corpus:
-				prev = '<s>'
-				prev_prev = '<s>'
 				for word in sent:
 					v_tree.insert(target_word=word, lklhd=lm.logscore(word)) # 1st lvl - unigram score
+				prev = '<s>'
+				for word in sent:
 					v_tree.insert(target_word=word, lklhd=lm.logscore(word, (prev,)), context=(prev,)) # 2nd lvl - bigram score
+					prev = word
+				prev_prev = '<s>'
+				prev = '<s>'
+				for word in sent:
 					v_tree.insert(target_word=word, lklhd=lm.logscore(word, (prev_prev, prev)), context=(prev_prev, prev)) # 3rd level - trigram score
 					prev_prev = prev
 					prev = word
@@ -47,7 +52,6 @@ class NgramLanguageModel:
 					pickle.dump(v_tree, output)
 					output.close()
 			return v_tree
-
 		v_tree = build_v_tree()
 
 		def evaluate():
@@ -60,7 +64,7 @@ class NgramLanguageModel:
 			for ngram in text_ngrams:
 				word = ngram[-1]
 				context = ngram[:-1]
-				score = 0.0002016942315449778
+				score = UNK_SCORE
 				if not context:
 					if lm.counts[word]:
 						score = lm.logscore(word)
