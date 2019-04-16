@@ -36,39 +36,21 @@ class JobTitleRecommender:
 	# Based upon Maximum Likelihood, a sequence of words (context) has a set of 'next word' results.
 	# This is used to predict the next possible words based on training data
 	def predict_next_word(self, text, capacity=CAPACITY):
+		text = '<s> <s> '+text
 		min_heap = []
 		context = tuple(text.split(' ')[-N_GRAM+1:])
-		# check if context is present in v_tree
-		# return self.v_tree.word_prediction(context)
-		# for x, v in self.v_tree.root.children.items():
-		# 	print(x, v.lklhd)
-		d1 = self.v_tree.root
-		d2  = self.v_tree.root.children['key']
-		d3 = self.v_tree.root.children['<s>'].children['<s>']
-
-		print(len(d1.children))
-		print(len(d2.children))
-		print(len(d3.children))
-		for x, v in d3.children.items():
-			print(x, v.lklhd)
-
-
-
-		# if prev_text_tokens:
-		# 	t = tuple(prev_text_tokens)
-		# 	if t in self.ngram_likelihood:
-		# 		for x in self.ngram_likelihood[t]:
-		# 			if len(min_heap) < capacity:
-		# 				heappush(min_heap, x)
-		# 			else:
-		# 				heappushpop(min_heap, x)
-
-		# return sorted([heappop(min_heap) for i in range(len(min_heap))], reverse=True)
+		l = self.v_tree.word_prediction(context)
+		for word_lklhd in l:
+			if len(min_heap) < capacity:
+				heappush(min_heap, word_lklhd)
+			else:
+				heappushpop(min_heap, word_lklhd)
+		return sorted([heappop(min_heap) for i in range(len(min_heap))], reverse=True)
 
 def main():
 	job_title_recommender = JobTitleRecommender()
 	# print(job_title_recommender.auto_complete('ae'))
-	print(job_title_recommender.predict_next_word('java engineering'))
+	print(job_title_recommender.predict_next_word('java'))
 
 if __name__ == "__main__":
    main()
