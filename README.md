@@ -19,3 +19,17 @@ The scores from the test set are calculated in a log space in order to avoid und
 
 log(p1 x p2 x p3 x p4 ) = log p1 + log p2 + log p3 + log p4
 
+1. We train parameters of our model on a training set.
+
+2. We test the model’s performance on data we haven’t seen. A test set is an unseen dataset that is different from our training set, totally unused.
+
+3. An evalua1on metric tells us how well our model does on the test set.
+
+### Perplexity
+
+Perplexity is the inverse probability of the test set, normalized by the number of words:
+
+PP(W) = P(w1w2w3...wN)<sup>-1/N</sup>
+
+Minimizing perplexity is the same as maximizing probability.
+
