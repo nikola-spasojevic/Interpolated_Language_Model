@@ -1,7 +1,8 @@
 from collections import defaultdict
+from math import log
 
 class VNode:
-	def __init__(self, lklhd=0.0):
+	def __init__(self, lklhd=log(0.0002016942315449778)):
 		self.lklhd = lklhd
 		self.children = defaultdict(VNode)
 
