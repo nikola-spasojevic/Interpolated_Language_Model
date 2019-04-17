@@ -1,5 +1,5 @@
 # Interpolated_Language_Model
-A language model based off KneserNeyInterpolated likelihood scores for trigrams, which are stored in 3 level deep vocabulary tree
+A language model based off WittenBellInterpolated likelihood scores for trigrams, which are stored in 3 level deep vocabulary tree
 
 In this iteration we decided to use a KneserNey Interpolation in order to distribute the score across trigrams/bigrams/unigrams 
 using a set of lambdas which are optimised on the training set (lambda1 + lambda2 + lambda3 = 1).
