@@ -46,6 +46,4 @@ Perplexity is the inverse probability of the test set, normalized by the number 
 
 Minimizing perplexity is the same as maximizing probability.
 
-### Overfitting
-
 
