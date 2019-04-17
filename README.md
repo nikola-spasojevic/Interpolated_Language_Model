@@ -14,7 +14,7 @@ Ngrams only work well for word prediction if the test corpus looks like the trai
 
 This is done using interpolation.
 
-## Interpolation
+## Smoothing - Interpolation
 
 
 Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 **(&#955;1 + &#955;2 + &#955;3 = 1)** ). These weights are optimised using the test set.
