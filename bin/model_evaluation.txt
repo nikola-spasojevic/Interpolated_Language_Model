@@ -1,2 +1,2 @@
-Model Evaluation Score (Entropy): 2.8248701371570824
-Model Evaluation Score (Perplexity): 7.085502329256686
+Model Evaluation Score (Entropy): 5.89038749921264
+Model Evaluation Score (Perplexity): 59.31756616308742
