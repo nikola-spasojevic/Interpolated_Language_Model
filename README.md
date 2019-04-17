@@ -40,4 +40,8 @@ Minimizing perplexity is the same as maximizing probability.
 
 Ngrams only work well for word prediction if the test corpus looks like the training corpus. 
 
-Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words
+Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words. This is done using interpolation, which assigns a probability to unseen words categorised as **<UNK>**.
+  
+When an Out Of Vovabulary word is seen, the UNK logscore is assigned to it
+
+The scores from the test set are calculated in a log space in order to avoid underflow (probabilities of some sequences are very small) and to have more efficient evaluation calculations - logscore addition is faster than score multiplcation.
