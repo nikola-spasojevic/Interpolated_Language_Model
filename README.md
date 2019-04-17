@@ -10,11 +10,12 @@ With a vocabulary size of |V|, the size of the tree is calculated as |V|<sup>N</
 
 **Level 3** represents trigram combinations and logscores on the next level.
 
-Ngrams only work well for word prediction if the test corpus looks like the training corpus. 
+Ngrams only work well for word prediction if the test corpus looks like the training corpus. Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words - we need to account for zero probablity bigrams/trigrams (we cannot compute perplexity when we need to divide with a result that is equal to 0!). 
+
+This is done using interpolation.
 
 ## Interpolation
 
-Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words. This is done using interpolation.
 
 Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 **(&#955;1 + &#955;2 + &#955;3 = 1)** ). These weights are optimised using the test set.
 
