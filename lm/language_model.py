@@ -1,9 +1,11 @@
-from nltk.lm import Laplace, KneserNeyInterpolated, WittenBellInterpolated
+from nltk.lm import KneserNeyInterpolated, WittenBellInterpolated
 from nltk.lm.preprocessing import padded_everygram_pipeline
 from collections import defaultdict
-from tokenizer.tokenizer import Tokenizer
-from vtree.v_tree import VTree
+from .tokenizer.tokenizer import Tokenizer
+from .vtree.v_tree import VTree
+from .trie.trie import Trie, TrieNode
 from statistics import mean
+from math import log
 import pickle
 
 class NgramLanguageModel:
@@ -19,9 +21,9 @@ class NgramLanguageModel:
 		# Interpolated version of Kneser-Ney smoothing.
 		lm = WittenBellInterpolated(N_GRAM)
 		lm.fit(training_ngrams, flat_sents)
-		UNK_SCORE = 0.0002016942315449778
+		UNK_SCORE = log(0.0002016942315449778)
 
-		with open('../bin/vocabulary.pkl', 'wb') as output:
+		with open('bin/vocabulary.pkl', 'wb') as output:
 			pickle.dump(lm.vocab, output)
 			output.close()
 
@@ -48,7 +50,7 @@ class NgramLanguageModel:
 					v_tree.insert(target_word=word, lklhd=lm.logscore(word, (prev_prev, prev)), context=(prev_prev, prev)) # 3rd level - trigram score
 					prev_prev = prev
 					prev = word
-				with open('../bin/v_tree.pkl', 'wb') as output:
+				with open('bin/v_tree.pkl', 'wb') as output:
 					pickle.dump(v_tree, output)
 					output.close()
 			return v_tree
@@ -72,7 +74,7 @@ class NgramLanguageModel:
 					score = lm.logscore(word, context)
 				entropy += score
 			entropy *= -1/len(text_ngrams)
-			file = open('../bin/model_evaluation.txt', 'w')
+			file = open('bin/model_evaluation.txt', 'w')
 			file.write('Model Evaluation Score (Entropy): {}\nModel Evaluation Score (Perplexity): {}'.format(entropy, pow(2.0, entropy)))
 			file.close()
 		evaluate()
