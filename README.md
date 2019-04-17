@@ -8,7 +8,7 @@ With a vocabulary size of |V|, the size of the tree is calculated as |V|<sup>N</
 
 Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 (&#955;1 + &#955;2 + &#955;3 = 1) ). These weights are optimised using the test set.
 
-P(W<sub>n</sub> | W<sub>n-2</sub> W<sub>n-1</sub>) = &#955;1 P(W<sub>n</sub> | W<sub>n-2</sub> W<sub>n-1</sub>) +
+P<sub>ip</sub>(W<sub>n</sub> | W<sub>n-2</sub>, W<sub>n-1</sub>) = &#955;1 P(W<sub>n</sub> | W<sub>n-2</sub>, W<sub>n-1</sub>) +
 &#955;2 P(W<sub>n</sub> | W<sub>n-1</sub>) + &#955;3 P(W<sub>n</sub>)
 
 ## Back-Off models
