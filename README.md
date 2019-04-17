@@ -8,6 +8,9 @@ With a vocabulary size of |V|, the size of the tree is calculated as |V|<sup>N</
 
 Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 (&#955;1 + &#955;2 + &#955;3 = 1) ). These weights are optimised using the test set.
 
+P(W<sub>n</sub> | W<sub>n-2</sub> W<sub>n-1</sub>) = &#955;1 P(W<sub>n</sub> | W<sub>n-2</sub> W<sub>n-1</sub>) +
+&#955;2 P(W<sub>n</sub> | W<sub>n-1</sub>) + &#955;3 P(W<sub>n</sub>)
+
 ## Back-Off models
 
 Next is the use of a Back-Off model, where in which if the trigram score is below a certain threshold, the model will revert 
@@ -33,3 +36,8 @@ PP(W) = P(w1w2w3...wN)<sup>-1/N</sup>
 
 Minimizing perplexity is the same as maximizing probability.
 
+### Overfitting
+
+Ngrams only work well for word prediction if the test corpus looks like the training corpus. 
+
+Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words
