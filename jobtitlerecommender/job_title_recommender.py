@@ -1,5 +1,3 @@
-from trie.trie import Trie, TrieNode
-from vtree.v_tree import VTree
 import pickle
 from heapq import heappush, heappushpop, heappop
 from collections import deque
@@ -8,8 +6,8 @@ CAPACITY=5
 N_GRAM=3
 
 class JobTitleRecommender:
-	def __init__(self, v_tree_dir='../bin/v_tree.pkl', trie_dir='../bin/trie.pkl'):
-		# vocaulary tree for ngram likelihood estimates (next word prediction)
+	def __init__(self, v_tree_dir='bin/v_tree.pkl', trie_dir='bin/trie.pkl'):
+		# vocabulary tree for ngram likelihood estimates (next word prediction)
 		with open(v_tree_dir, 'rb') as pickle_in:
 			self.v_tree = pickle.load(pickle_in, encoding='utf8')
 		# trie for autocomplete
@@ -37,8 +35,9 @@ class JobTitleRecommender:
 	# This is used to predict the next possible words based on training data
 	def predict_next_word(self, text, capacity=CAPACITY):
 		text = '<s> <s> '+text
+		text = ' '.join(text.split())
 		min_heap = []
-		context = tuple(text.split(' ')[-N_GRAM+1:])
+		context = tuple(text.split()[-N_GRAM+1:])
 		l = self.v_tree.word_prediction(context)
 		for word_lklhd in l:
 			if len(min_heap) < capacity:
