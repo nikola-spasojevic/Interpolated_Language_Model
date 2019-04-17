@@ -6,7 +6,7 @@ With a vocabulary size of |V|, the size of the tree is calculated as |V|<sup>N</
 
 ## Interpolation
 
-Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 (&#955;1 + &#955;2 + &#955;3 = 1) ). These weights are optimised using the test set.
+Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 **(&#955;1 + &#955;2 + &#955;3 = 1)** ). These weights are optimised using the test set.
 
 **P<sub>ip</sub>(W<sub>n</sub> | W<sub>n-2</sub>, W<sub>n-1</sub>) = &#955;1 P(W<sub>n</sub> | W<sub>n-2</sub>, W<sub>n-1</sub>) +
 &#955;2 P(W<sub>n</sub> | W<sub>n-1</sub>) + &#955;3 P(W<sub>n</sub>)**
@@ -26,7 +26,7 @@ The scores from the test set are calculated in a log space in order to avoid und
 
 2. We test the model’s performance on data we haven’t seen. A test set is an unseen dataset that is different from our training set, totally unused.
 
-3. An evalua1on metric tells us how well our model does on the test set.
+3. An evaluation metric tells us how well our model does on the test set.
 
 ### Perplexity
 
@@ -42,4 +42,4 @@ Ngrams only work well for word prediction if the test corpus looks like the trai
 
 Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words. This is done using interpolation, which assigns a probability to unseen words categorised as **<UNK>**.
   
-When an Out Of Vovabulary word is seen, the UNK logscore is assigned to it.
+When an **Out Of Vovabulary (OOV)** word is seen, the UNK logscore is assigned to it.
