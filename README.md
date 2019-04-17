@@ -4,7 +4,17 @@ A language model based off WittenBellInterpolated likelihood logscores for ngram
 
 With a vocabulary size of |V|, the size of the tree is calculated as |V|<sup>N</sup>.
 
+**Level 1** represents the full vocabulary of words along with there repective unigram logscores. An **<UNK>** label is included in the vocabulary to account for unseen words (to which a likleihood logscore is assigned based on the interpolation of trigram/bigram/unigram scores) - this is the **Out Of Vovabulary (OOV)** case.
+
+**Level 2** represents bigram combinations and logscores (where the root node is the unigram word, and is the conditional context of the bigram branches.
+
+**Level 3** represents trigram combinations and logscores on the next level.
+
+Ngrams only work well for word prediction if the test corpus looks like the training corpus. 
+
 ## Interpolation
+
+Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words. This is done using interpolation.
 
 Ngram probability mass is distributed across lower level ngrams (i.e. likelihood estimates from trigram scores are weighed down and given to bigram/unigram scores given a set of weights that add up to 1 **(&#955;1 + &#955;2 + &#955;3 = 1)** ). These weights are optimised using the test set.
 
@@ -38,8 +48,4 @@ Minimizing perplexity is the same as maximizing probability.
 
 ### Overfitting
 
-Ngrams only work well for word prediction if the test corpus looks like the training corpus. 
 
-Hence, we need to have a more general model that can account for the zero counts appearing from the test set for unseen words. This is done using interpolation, which assigns a probability to unseen words categorised as **<UNK>**.
-  
-When an **Out Of Vovabulary (OOV)** word is seen, the UNK logscore is assigned to it.
